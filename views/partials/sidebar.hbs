@@ -1,0 +1,73 @@
+<div class="col-lg-4 col-md-5">
+    <div class="blog__sidebar">
+        <div class="blog__sidebar__search">
+            <form id="searchForm" action="">
+                <input type="text" name="search" placeholder="Search...">
+                <button type="submit"><span class="icon_search"></span></button>
+            </form>
+        </div>
+        <div class="blog__sidebar__item">
+            <h4>Categories</h4>
+            <ul>
+                <li><a href="{{addQueryParam currentUrl 'category' 'all'}}">All</a></li>
+                {{#each categories}}
+                    <li><a href="{{addQueryParam ../currentUrl 'category' id}}">{{this.name}} ({{this.Blogs.length}})</a></li>
+                {{/each}}
+                {{!-- <li><a href="/blogs">All</a></li>
+                <li><a href="#">Beauty (20)</a></li>
+                <li><a href="#">Food (5)</a></li>
+                <li><a href="#">Life Style (9)</a></li>
+                <li><a href="#">Travel (10)</a></li> --}}
+            </ul>
+        </div>
+
+        <div class="blog__sidebar__item">
+            <h4>Search By Tags</h4>
+            <div class="blog__sidebar__item__tags">
+                {{#each tags}}
+                    <a href="{{addQueryParam ../currentUrl 'tag' id}}">{{this.name}}</a>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function addQueryParam(url, query, value) {
+        // console.log(query, value);
+        if (url.includes(query)) {
+            const queryParams = url.split('?')[1].split('&');
+            queryParams.forEach((param, index) => {
+                let [name, num] = param.split('=');
+                // console.log(name, num);
+                if (name == query) {
+                    num = String(value);
+                    // console.log(num);
+                    // console.log(queryParams[index]);
+                    // console.log([name, num].join("="));
+                    queryParams[index] = [name, num].join("=");
+                    // console.log(queryParams[index]);
+                    // console.log(queryParams);
+                }
+            })                
+            return [url.split('?')[0], queryParams.join('&')].join('?')
+        }
+
+        const separator = url.includes('?') ? '&' : '?';
+        return `${url}${separator}${query}=${value}`;
+    }
+
+    document.getElementById('searchForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        var searchInput = document.querySelector('input[name="search"]');
+        var searchValue = searchInput.value;
+        // Modify the URL using your addQueryParam function
+        console.log(window.location.href);
+        var updatedUrl = addQueryParam(window.location.href, 'search', searchValue);
+        console.log(updatedUrl);
+        // Navigate to the updated URL
+        window.location.href = updatedUrl;
+    });
+</script>
